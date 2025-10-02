@@ -9,6 +9,7 @@ import Picture from './components/login/picture'
 import LoginForm from './components/login/form'
 import NavBar from './components/landing/navBar'
 import Footer from './components/landing/footer'
+import RegisterForm from './components/register/registerForm'
 
 
 function App() {
@@ -37,6 +38,17 @@ function App() {
         
           <Picture />
           <LoginForm />
+          
+          </>
+        }
+      />
+            <Route
+        path="/register"
+        element={
+          <>
+        
+          <RegisterForm />
+          
           
           </>
         }
