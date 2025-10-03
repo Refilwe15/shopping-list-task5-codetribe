@@ -35,13 +35,13 @@ const ShoppingListUI: React.FC = () => {
 
             {/* Inline actions with borders */}
             <div className="flex gap-3 mt-3 text-sm">
-              <button className="flex items-center gap-1 px-3 py-1 border border-yellow-600 text-yellow-600 rounded hover:bg-yellow-50">
+              <button className="flex items-center gap-1 px-3 py-1 border border-black">
                 <FiEdit size={16} /> Edit
               </button>
-              <button className="flex items-center gap-1 px-3 py-1 border border-red-600 text-red-600 rounded hover:bg-red-50">
+              <button className="flex items-center gap-1 px-3 py-1 border border-black">
                 <FiTrash size={16} /> Delete
               </button>
-              <button className="flex items-center gap-1 px-3 py-1 border border-gray-600 text-gray-600 rounded hover:bg-gray-50">
+              <button className="flex items-center gap-1 px-3 py-1 border border-black">
                 <FiStar size={16} /> Favorite
               </button>
             </div>
@@ -57,17 +57,17 @@ const ShoppingListUI: React.FC = () => {
           />
           <div className="flex-1">
             <h3 className="font-semibold text-lg">Bread</h3>
-            <p className="text-sm text-gray-600">Category: Bakery</p>
-            <p className="text-sm text-gray-600">Quantity: 1</p>
+            <p className="text-sm text-black">Category: Bakery</p>
+            <p className="text-sm text-black">Quantity: 1</p>
 
             <div className="flex gap-3 mt-3 text-sm">
-              <button className="flex items-center gap-1 px-3 py-1 border border-yellow-600 text-yellow-600 rounded hover:bg-yellow-50">
+              <button className="flex items-center gap-1 px-3 py-1 border border-black">
                 <FiEdit size={16} /> Edit
               </button>
-              <button className="flex items-center gap-1 px-3 py-1 border border-red-600 text-red-600 rounded hover:bg-red-50">
+              <button className="flex items-center gap-1 px-3 py-1 border border-black">
                 <FiTrash size={16} /> Delete
               </button>
-              <button className="flex items-center gap-1 px-3 py-1 border border-gray-600 text-gray-600 rounded hover:bg-gray-50">
+              <button className="flex items-center gap-1 px-3 py-1 border border-black">
                 <FiStar size={16} /> Favorite
               </button>
             </div>
