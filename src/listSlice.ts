@@ -1,11 +1,13 @@
-import { createSlice} from "@reduxjs/toolkit";
-import  type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface Item {
   id: number;
   name: string;
   category: string;
   quantity: number;
+  description?: string;
+  image?: string;
+  favorite?: boolean;
 }
 
 interface ListState {
@@ -20,14 +22,11 @@ const listSlice = createSlice({
   name: "list",
   initialState,
   reducers: {
-    addItem: (state, action: PayloadAction<Item>) => {
-      state.items.push(action.payload);
-    },
-    deleteItem: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter((i) => i.id !== action.payload);
+    setItems: (state, action: PayloadAction<Item[]>) => {
+      state.items = action.payload;
     },
   },
 });
 
-export const { addItem, deleteItem } = listSlice.actions;
+export const { setItems } = listSlice.actions; // ✅ Named export
 export default listSlice.reducer;
