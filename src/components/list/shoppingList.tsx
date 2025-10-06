@@ -30,7 +30,7 @@ const ShoppingList: React.FC = () => {
   const [image, setImage] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // ✅ Fetch items from JSON server
+
   const fetchItems = useCallback(async () => {
     try {
       const res = await fetch(API_URL);
@@ -147,7 +147,7 @@ const ShoppingList: React.FC = () => {
           onClick={() => setSearchTerm("")}
           className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
         >
-          Clear
+         Search
         </button>
       </div>
 

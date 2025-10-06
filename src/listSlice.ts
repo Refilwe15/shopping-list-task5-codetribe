@@ -28,5 +28,5 @@ const listSlice = createSlice({
   },
 });
 
-export const { setItems } = listSlice.actions; // ✅ Named export
+export const { setItems } = listSlice.actions; 
 export default listSlice.reducer;
