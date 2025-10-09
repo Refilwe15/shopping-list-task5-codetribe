@@ -10,6 +10,7 @@ import NavBar from "./components/landing/navBar";
 import Footer from "./components/landing/footer";
 import RegisterForm from "./components/register/registerForm";
 import ShoppingList from "./components/list/shoppingList";
+import Profile from "./components/Profile/profile";
 
 function App() {
   return (
@@ -50,6 +51,14 @@ function App() {
           element={
             <>
               <ShoppingList />
+            </>
+          }
+        />
+                <Route
+          path="/profile"
+          element={
+            <>
+              <Profile />
             </>
           }
         />

@@ -1,14 +1,18 @@
-import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-const API_URL = "http://localhost:5005/users";
+const API_URL = "http://localhost:5006/users";
 
-interface User {
+
+export interface User {
   id?: number;
-  username: string;
+  name: string;
+  email: string;
   password: string;
+  username : string,
 }
+
 
 interface AuthState {
   currentUser: User | null;
@@ -16,13 +20,12 @@ interface AuthState {
   error: string | null;
 }
 
+
 const initialState: AuthState = {
   currentUser: null,
   status: "idle",
   error: null,
 };
-
-
 
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
@@ -36,36 +39,41 @@ export const signUpUser = createAsyncThunk(
   }
 );
 
+
 export const signInUser = createAsyncThunk(
   "auth/signInUser",
-  async (credentials: User, { rejectWithValue }) => {
+  async (
+    credentials: { email: string; password: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await axios.get(`${API_URL}?username=${credentials.username}`);
+      const response = await axios.get(`${API_URL}?email=${credentials.email}`);
       const user = response.data[0];
 
       if (user && user.password === credentials.password) {
         return user;
       } else {
-        return rejectWithValue("Invalid username or password");
+        return rejectWithValue("Invalid email or password");
       }
-    } catch {
+    } catch (error) {
       return rejectWithValue("Login failed");
     }
   }
 );
 
-// 🟦 Slice
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     signOut(state) {
       state.currentUser = null;
+      state.status = "idle";
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Sign Up
+      // 🔹 Sign Up
       .addCase(signUpUser.pending, (state) => {
         state.status = "loading";
       })
@@ -78,7 +86,7 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // Sign In
+      // 🔹 Sign In
       .addCase(signInUser.pending, (state) => {
         state.status = "loading";
       })

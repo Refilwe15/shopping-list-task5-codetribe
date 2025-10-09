@@ -1,23 +1,24 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../store";
-import { signUpUser } from "../../features/authSlice";
+import {useSelector } from "react-redux";
+import type {  RootState } from "../../store";
+
 import Picture from "../../components/login/picture";
 
 const RegisterForm: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  
   const { status, error, currentUser } = useSelector(
     (state: RootState) => state.auth
   );
 
   const [surname, setSurname] = useState("");
+  
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(signUpUser({ username: surname, password }));
+    
   };
 
   return (
@@ -117,7 +118,7 @@ const RegisterForm: React.FC = () => {
         {error && <p className="text-red-600 mt-3 text-sm">{error}</p>}
         {currentUser && (
           <p className="text-green-600 mt-3 text-sm">
-            Account created for {currentUser.username}
+            Account created for {currentUser.email}
           </p>
         )}
 

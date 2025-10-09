@@ -4,6 +4,9 @@ import type { RootState } from "../../store";
 import { setItems } from "../../listSlice";
 import { FiEdit, FiTrash, FiStar } from "react-icons/fi";
 import Pic from "../../assets/list.png";
+import Pics from "../../assets/profile.png";
+import {  useNavigate } from "react-router-dom";
+
 
 interface LocalItem {
   id: number;
@@ -15,7 +18,7 @@ interface LocalItem {
   favorite?: boolean;
 }
 
-const API_URL = "http://localhost:5005/items";
+const API_URL = "http://localhost:5006/items";
 
 const ShoppingList: React.FC = () => {
   const items = useSelector((state: RootState) => state.list.items);
@@ -29,6 +32,7 @@ const ShoppingList: React.FC = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
 
   const fetchItems = useCallback(async () => {
@@ -123,14 +127,26 @@ const ShoppingList: React.FC = () => {
     }
   };
 
-  // Filter items based on search term
+
   const filteredItems = items.filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 py-8 px-4">
+    <div className="flex flex-col items-center min-h-screen bg-white- py-8 px-4">
+      {/* Profile Logo */}
+      <div className="icon">
+
+        <img
+  src={Pics}
+  alt="Profile"
+   onClick={() => navigate("/profile")} 
+  className="w-12 h-12 rounded-full mb-4 ml-400 cursor-pointer hover:scale-105 transition-transform"
+/>
+
+
+      </div>
       <h2 className="text-2xl font-bold text-center mb-4">My Shopping List</h2>
       <img src={Pic} alt="Shopping" className="w-28 h-28 mx-auto mb-6" />
 
@@ -174,24 +190,32 @@ const ShoppingList: React.FC = () => {
                 {item.description && <p className="text-sm text-gray-400 italic">{item.description}</p>}
 
                 <div className="flex gap-3 mt-3 text-sm">
-                  <button onClick={() => handleEdit(item)} className="flex items-center gap-1 px-3 py-1 border border-black rounded">
+                  <button onClick={() => handleEdit(item)} className="flex items-center gap-1 px-3 py-1 border text-green-500 border-green-600 rounded">
                     <FiEdit size={16} /> Edit
                   </button>
-                  <button onClick={() => handleDelete(item.id)} className="flex items-center gap-1 px-3 py-1 border border-black rounded hover:text-red-600">
+                  <button onClick={() => handleDelete(item.id)} className="flex items-center gap-1 px-3 py-1 border text-red-500 border-red-600 rounded hover:text-red-600">
                     <FiTrash size={16} /> Delete
                   </button>
                   <button
                     onClick={() => handleToggleFavorite(item)}
-                    className={`flex items-center gap-1 px-3 py-1 border rounded ${item.favorite ? "border-yellow-400 text-yellow-500" : "border-black"}`}
+                    className={`flex items-center gap-1 px-3 py-1 border rounded text-yellow-500 border-yellow-600 ${item.favorite ? " text-yellow-500" : "border-black"}`}
                   >
                     <FiStar size={16} /> Favorite
                   </button>
                 </div>
               </div>
             </li>
+            
           ))
         )}
       </ul>
+            <button
+        onClick={() =>  navigate("/landing")}
+        className="mb-6 bg-red-500 text-white px-6 py-2 mt-20 rounded-lg shadow hover:bg-red-800"
+      >
+        Logout
+      </button>
+
 
       {/* Modal */}
       {isModalOpen && (
@@ -226,7 +250,9 @@ const ShoppingList: React.FC = () => {
                 <button type="button" onClick={handleSave} className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">{currentItemId ? "Update" : "Save"}</button>
               </div>
             </form>
+            
           </div>
+    
         </div>
       )}
     </div>

@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; // ✅ added for navigation
+import { useNavigate } from "react-router-dom"; 
 import type { AppDispatch, RootState } from "../../store";
 import { signInUser } from "../../features/authSlice";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate(); // ✅ initialize navigation
+  const navigate = useNavigate(); 
 
   const { status, error, currentUser } = useSelector(
     (state: RootState) => state.auth
   );
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(signInUser({ username, password }));
+    dispatch(signInUser({ email, password }));
   };
 
-  // ✅ Redirect to shoppingList.tsx after successful login
+  
   useEffect(() => {
     if (currentUser) {
       navigate("/shoppingList");
@@ -44,14 +44,14 @@ const LoginForm: React.FC = () => {
           className="block text-gray-700 text-sm font-bold mb-2"
           htmlFor="username"
         >
-          Username :
+          Email :
         </label>
         <input
           id="username"
           type="text"
           placeholder="Enter username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
