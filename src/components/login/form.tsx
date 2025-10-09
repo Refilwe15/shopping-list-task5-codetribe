@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom"; 
 import type { AppDispatch, RootState } from "../../store";
 import { signInUser } from "../../features/authSlice";
+import Pic from "../../assets/profile2.png"
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -28,7 +29,10 @@ const LoginForm: React.FC = () => {
   }, [currentUser, navigate]);
 
   return (
+<div>
+
     <form
+    
       onSubmit={handleSubmit}
       className="w-140  h-150 p-8 bg-white rounded-lg shadow-md ml-110 mt-33"
     >
@@ -111,6 +115,7 @@ const LoginForm: React.FC = () => {
         </a>
       </p>
     </form>
+    </div>
   );
 };
 

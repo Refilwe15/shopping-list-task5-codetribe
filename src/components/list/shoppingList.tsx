@@ -4,7 +4,7 @@ import type { RootState } from "../../store";
 import { setItems } from "../../listSlice";
 import { FiEdit, FiTrash, FiStar } from "react-icons/fi";
 import Pic from "../../assets/list.png";
-import Pics from "../../assets/profile.png";
+import Pics from "../../assets/profile2.png";
 import {  useNavigate } from "react-router-dom";
 
 
@@ -161,7 +161,7 @@ const ShoppingList: React.FC = () => {
         />
         <button
           onClick={() => setSearchTerm("")}
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
         >
          Search
         </button>
