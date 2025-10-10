@@ -4,7 +4,7 @@ import Body from "./components/landing/Body";
 import GetStartedBtn from "./components/landing/Button";
 import SideIcon from "./components/landing/sideIcon";
 import { Route, Routes } from "react-router-dom";
-import Picture from "./components/login/picture";
+
 import LoginForm from "./components/login/form";
 import NavBar from "./components/landing/navBar";
 import Footer from "./components/landing/footer";
@@ -33,7 +33,7 @@ function App() {
           path="/login"
           element={
             <>
-              <Picture />
+            
               <LoginForm />
             </>
           }

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import type { AppDispatch, RootState } from "../../store";
 import { signInUser } from "../../features/authSlice";
-import Pic from "../../assets/profile2.png"
+import Picture from "./picture";
 
 const LoginForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const { status, error, currentUser } = useSelector(
     (state: RootState) => state.auth
@@ -21,100 +21,110 @@ const LoginForm: React.FC = () => {
     dispatch(signInUser({ email, password }));
   };
 
-  
   useEffect(() => {
-    if (currentUser) {
-      navigate("/shoppingList");
-    }
+    if (currentUser) navigate("/shoppingList");
   }, [currentUser, navigate]);
 
   return (
-<div>
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Left half: Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-6 md:p-12">
+        <div className="w-full max-w-md">
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-2">
+            Welcome Back!
+          </h2>
+          <p className="text-center text-gray-500 text-sm mb-8">
+            Enter your email and password to access your account
+          </p>
 
-    <form
-    
-      onSubmit={handleSubmit}
-      className="w-140  h-150 p-8 bg-white rounded-lg shadow-md ml-110 mt-33"
-    >
-      {/* Heading */}
-      <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-      <p className="text-gray-500 text-sm mb-6">
-        Enter your details to access the features of the app
-      </p>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
+                required
+              />
+            </div>
 
-      {/* Username */}
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="username"
-        >
-          Email :
-        </label>
-        <input
-          id="username"
-          type="text"
-          placeholder="Enter username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-gray-700 font-semibold mb-2"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 transition"
+                required
+              />
+            </div>
+
+            {/* Remember & Forgot */}
+            <div className="flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 gap-2 sm:gap-0">
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="accent-purple-500" />
+                <span>Remember me</span>
+              </label>
+              <a
+                href="/forgot"
+                className="text-purple-600 hover:text-purple-800 hover:underline"
+              >
+                Forgot Password?
+              </a>
+            </div>
+
+            {/* Sign In Button */}
+            <button
+              type="submit"
+              className="w-full py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition"
+            >
+              {status === "loading" ? "Signing In..." : "Sign In"}
+            </button>
+
+            {/* Error/Success Messages */}
+            {error && (
+              <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
+            )}
+            {currentUser && (
+              <p className="text-green-600 text-sm mt-2 text-center">
+                Logged in as {currentUser.username}
+              </p>
+            )}
+          </form>
+
+          <p className="mt-8 text-center text-gray-600 text-sm">
+            Don’t have an account?{" "}
+            <a
+              href="/register"
+              className="text-purple-600 font-semibold hover:underline"
+            >
+              Register here
+            </a>
+          </p>
+        </div>
       </div>
 
-      {/* Password */}
-      <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="password"
-        >
-          Password :
-        </label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
-        />
+      {/* Right half: Picture */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-purple-50 p-6 md:p-12">
+        <Picture />
       </div>
-
-      {/* Remember & Forgot */}
-      <div className="flex items-center justify-between mb-6">
-        <label className="flex items-center text-sm text-gray-600">
-          <input type="checkbox" className="mr-2" /> Remember me
-        </label>
-        <a href="/forgot" className="text-sm text-blue-600 hover:underline">
-          Forgot Password?
-        </a>
-      </div>
-
-      {/* Button */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-      >
-        {status === "loading" ? "Signing In..." : "Sign In"}
-      </button>
-
-      {/* Messages */}
-      {error && <p className="text-red-600 mt-3 text-sm">{error}</p>}
-      {currentUser && (
-        <p className="text-green-600 mt-3 text-sm">
-          Logged in as {currentUser.username}
-        </p>
-      )}
-
-      {/* Register Link */}
-      <p className="mt-6 text-center text-sm text-gray-600">
-        Don’t have an account?{" "}
-        <a
-          href="/register"
-          className="text-blue-600 font-semibold hover:underline"
-        >
-          Register here
-        </a>
-      </p>
-    </form>
     </div>
   );
 };
