@@ -1,18 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
 import axios from "axios";
-import type { PayloadAction } from "@reduxjs/toolkit";
 
 const API_URL = "http://localhost:5006/users";
-
 
 export interface User {
   id?: number;
   name: string;
   email: string;
   password: string;
-  username : string,
+  username: string;
 }
-
 
 interface AuthState {
   currentUser: User | null;
@@ -20,46 +18,44 @@ interface AuthState {
   error: string | null;
 }
 
-
 const initialState: AuthState = {
   currentUser: null,
   status: "idle",
   error: null,
 };
 
-export const signUpUser = createAsyncThunk(
+// --- Sign Up ---
+export const signUpUser = createAsyncThunk<User, User, { rejectValue: string }>(
   "auth/signUpUser",
-  async (newUser: User, { rejectWithValue }) => {
+  async (newUser, { rejectWithValue }) => {
     try {
-      const response = await axios.post(API_URL, newUser);
+      const response = await axios.post<User>(API_URL, newUser);
       return response.data;
-    } catch (err) {
+    } catch {
       return rejectWithValue("Sign-up failed");
     }
   }
 );
 
+// --- Sign In ---
+export const signInUser = createAsyncThunk<
+  User,
+  { email: string; password: string },
+  { rejectValue: string }
+>("auth/signInUser", async (credentials, { rejectWithValue }) => {
+  try {
+    const response = await axios.get<User[]>(`${API_URL}?email=${credentials.email}`);
+    const user = response.data[0];
 
-export const signInUser = createAsyncThunk(
-  "auth/signInUser",
-  async (
-    credentials: { email: string; password: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const response = await axios.get(`${API_URL}?email=${credentials.email}`);
-      const user = response.data[0];
-
-      if (user && user.password === credentials.password) {
-        return user;
-      } else {
-        return rejectWithValue("Invalid email or password");
-      }
-    } catch (error) {
-      return rejectWithValue("Login failed");
+    if (user && user.password === credentials.password) {
+      return user;
+    } else {
+      return rejectWithValue("Invalid email or password");
     }
+  } catch {
+    return rejectWithValue("Login failed");
   }
-);
+});
 
 const authSlice = createSlice({
   name: "auth",
@@ -73,30 +69,27 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      //Sign In
       .addCase(signUpUser.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(signUpUser.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(signUpUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.currentUser = action.payload;
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload as string;
+        state.error = action.payload ?? "Sign-up failed";
       })
-
-      //Sign In
       .addCase(signInUser.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(signInUser.fulfilled, (state, action: PayloadAction<User>) => {
+      .addCase(signInUser.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.currentUser = action.payload;
       })
       .addCase(signInUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.payload as string;
+        state.error = action.payload ?? "Login failed";
       });
   },
 });
