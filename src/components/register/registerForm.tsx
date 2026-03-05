@@ -1,9 +1,12 @@
+// src/components/register/RegisterForm.tsx
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../store";
+import { signUpUser } from "../../features/authSlice";
 import Picture from "../../components/login/picture";
 
 const RegisterForm: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { status, error, currentUser } = useSelector(
     (state: RootState) => state.auth
   );
@@ -15,13 +18,27 @@ const RegisterForm: React.FC = () => {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add registration logic here
+
+    dispatch(
+      signUpUser({
+        surname,
+        email,
+        phone,
+        password,
+      })
+    );
+
+    // Optionally clear the form after submission
+    setSurname("");
+    setEmail("");
+    setPhone("");
+    setPassword("");
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row  ">
-      {/* Left half: Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 sm:p-8 md:p-12 lg:p-16">
+    <div className="min-h-screen flex flex-col md:flex-row">
+      {/* Left: Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 md:p-12 lg:p-16">
         <div className="w-full max-w-md">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 text-center mb-2">
             Create Account
@@ -107,7 +124,7 @@ const RegisterForm: React.FC = () => {
               />
             </div>
 
-            {/* Button */}
+            {/* Submit Button */}
             <button
               type="submit"
               className="w-full py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition text-sm md:text-base"
@@ -141,8 +158,8 @@ const RegisterForm: React.FC = () => {
         </div>
       </div>
 
-    
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-purple-50 p-6 sm:p-8 md:p-12 lg:p-16">
+      {/* Right: Picture */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-purple-50 p-6 md:p-12 lg:p-16">
         <Picture />
       </div>
     </div>

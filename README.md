@@ -1,73 +1,119 @@
-# React + TypeScript + Vite
+npx json-server --watch db.json --port 5006
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# React Redux Shopping List
 
-Currently, two official plugins are available:
+A simple Shopping List web application built with React and Redux. Users can add, remove, and manage shopping items. This project demonstrates state management using Redux and a clean React component structure.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Add items to your shopping list
+- Remove items from the list
+- Manage state globally using Redux
+- Fast and responsive interface with React
+- Real-time updates when items are added or removed
+- Demonstrates Redux actions, reducers, and store usage
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technologies Used
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React
+- Redux
+- React Redux
+- TypeScript / JavaScript
+- HTML5 & CSS3
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Project Structure
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+shopping-list/
+│
+├── src/
+│   ├── components/
+│   │   ├── ShoppingList.tsx
+│   │   ├── ShoppingItem.tsx
+│   │   └── AddItemForm.tsx
+│   │
+│   ├── redux/
+│   │   ├── actions.ts
+│   │   ├── reducer.ts
+│   │   └── store.ts
+│   │
+│   ├── App.tsx
+│   ├── index.tsx
+│   └── styles.css
+│
+├── package.json
+└── README.md
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Installation
+
+1. Clone the repository:
+
+git clone https://github.com/your-username/react-redux-shopping-list.git
+
+2. Navigate into the project folder:
+
+cd react-redux-shopping-list
+
+3. Install dependencies:
+
+npm install
+
+4. Start the development server:
+
+npm start
+
+The app should open at:
+
+http://localhost:3000
+
+---
+
+## How Redux Works in This App
+
+1. Actions – Define the events that can change the shopping list (e.g., ADD_ITEM, REMOVE_ITEM).  
+2. Reducer – Handles state updates based on dispatched actions.  
+3. Store – Centralized state for the shopping list.  
+4. React Components – Components use `useDispatch` to trigger actions and `useSelector` to access the state.
+
+---
+
+## Usage
+
+1. Type an item in the input field.  
+2. Click "Add Item" → it appears in the list.  
+3. Click "Remove" → deletes the item.  
+
+---
+
+## Learning Goals
+
+- Understanding Redux state management in React
+- Dispatching actions and updating reducers
+- Connecting React components to Redux store
+- Managing form inputs and dynamic lists
+
+---
+
+## Future Improvements
+
+- Edit items in the list
+- Persist list to localStorage
+- Improve mobile responsiveness
+- Categorize shopping items
+
+---
+
+## Screenshots
+
+
+![alt text](src/components/landing/pic1.jpg)
+![alt text](src/components/landing/pic2.jpg)
+
+
