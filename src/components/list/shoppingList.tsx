@@ -5,8 +5,7 @@ import { setItems } from "../../listSlice";
 import { FiEdit, FiTrash, FiStar } from "react-icons/fi";
 import Pic from "../../assets/list.png";
 import Pics from "../../assets/profile2.png";
-import {  useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
 
 interface LocalItem {
   id: number;
@@ -33,7 +32,6 @@ const ShoppingList: React.FC = () => {
   const [image, setImage] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
 
   const fetchItems = useCallback(async () => {
     try {
@@ -78,7 +76,9 @@ const ShoppingList: React.FC = () => {
       quantity,
       description,
       image,
-      favorite: currentItemId ? items.find(i => i.id === currentItemId)?.favorite : false
+      favorite: currentItemId
+        ? items.find((i) => i.id === currentItemId)?.favorite
+        : false,
     };
 
     try {
@@ -98,7 +98,11 @@ const ShoppingList: React.FC = () => {
       fetchItems();
       setIsModalOpen(false);
       setCurrentItemId(null);
-      setName(""); setCategory(""); setQuantity(1); setDescription(""); setImage("");
+      setName("");
+      setCategory("");
+      setQuantity(1);
+      setDescription("");
+      setImage("");
     } catch (err) {
       console.error("Failed to save item:", err);
     }
@@ -127,26 +131,30 @@ const ShoppingList: React.FC = () => {
     }
   };
 
-
-  const filteredItems = items.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredItems = items.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  // Logout handler
+  const handleLogout = () => {
+    dispatch(setItems([])); // Clear list from Redux (optional)
+    navigate("/login"); // Navigate to Form.tsx route
+  };
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-white- py-8 px-4">
       {/* Profile Logo */}
       <div className="icon">
-
         <img
-  src={Pics}
-  alt="Profile"
-   onClick={() => navigate("/profile")} 
-  className="w-12 h-12 rounded-full mb-4 ml-400 cursor-pointer hover:scale-105 transition-transform"
-/>
-
-
+          src={Pics}
+          alt="Profile"
+          onClick={() => navigate("/profile")}
+          className="w-12 h-12 rounded-full mb-4 ml-400 cursor-pointer hover:scale-105 transition-transform"
+        />
       </div>
+
       <h2 className="text-2xl font-bold text-center mb-4">My Shopping List</h2>
       <img src={Pic} alt="Shopping" className="w-28 h-28 mx-auto mb-6" />
 
@@ -156,14 +164,14 @@ const ShoppingList: React.FC = () => {
           type="text"
           placeholder="Search by name or category..."
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
           className="flex-1 border px-3 py-2 rounded"
         />
         <button
           onClick={() => setSearchTerm("")}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
         >
-         Search
+          Search
         </button>
       </div>
 
@@ -180,20 +188,41 @@ const ShoppingList: React.FC = () => {
         {filteredItems.length === 0 ? (
           <p className="text-gray-500 text-center">No items found.</p>
         ) : (
-          filteredItems.map(item => (
-            <li key={item.id} className="flex items-start gap-4 bg-white rounded-lg p-4 shadow-sm">
-              <img src={item.image || "/placeholder.png"} alt={item.name} className="w-16 h-16 rounded object-cover" />
+          filteredItems.map((item) => (
+            <li
+              key={item.id}
+              className="flex items-start gap-4 bg-white rounded-lg p-4 shadow-sm"
+            >
+              <img
+                src={item.image || "/placeholder.png"}
+                alt={item.name}
+                className="w-16 h-16 rounded object-cover"
+              />
               <div className="flex-1">
                 <h3 className="font-semibold text-lg">{item.name}</h3>
-                <p className="text-sm text-gray-600">Category: {item.category}</p>
-                <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
-                {item.description && <p className="text-sm text-gray-400 italic">{item.description}</p>}
+                <p className="text-sm text-gray-600">
+                  Category: {item.category}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Quantity: {item.quantity}
+                </p>
+                {item.description && (
+                  <p className="text-sm text-gray-400 italic">
+                    {item.description}
+                  </p>
+                )}
 
                 <div className="flex gap-3 mt-3 text-sm">
-                  <button onClick={() => handleEdit(item)} className="flex items-center gap-1 px-3 py-1 border text-green-500 border-green-600 rounded">
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="flex items-center gap-1 px-3 py-1 border text-green-500 border-green-600 rounded"
+                  >
                     <FiEdit size={16} /> Edit
                   </button>
-                  <button onClick={() => handleDelete(item.id)} className="flex items-center gap-1 px-3 py-1 border text-red-500 border-red-600 rounded hover:text-red-600">
+                  <button
+                    onClick={() => handleDelete(item.id)}
+                    className="flex items-center gap-1 px-3 py-1 border text-red-500 border-red-600 rounded hover:text-red-600"
+                  >
                     <FiTrash size={16} /> Delete
                   </button>
                   <button
@@ -205,54 +234,104 @@ const ShoppingList: React.FC = () => {
                 </div>
               </div>
             </li>
-            
           ))
         )}
       </ul>
-            <button
-        onClick={() =>  navigate("/landing")}
+
+      {/* Logout */}
+      <button
+        onClick={handleLogout}
         className="mb-6 bg-red-500 text-white px-6 py-2 mt-20 rounded-lg shadow hover:bg-red-800"
       >
         Logout
       </button>
 
-
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
-            <h3 className="text-xl font-bold mb-4">{currentItemId ? "Edit Item" : "Add New Item"}</h3>
+            <h3 className="text-xl font-bold mb-4">
+              {currentItemId ? "Edit Item" : "Add New Item"}
+            </h3>
 
             <form className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Picture</label>
-                <input type="file" onChange={handleImageChange} className="w-full border px-3 py-2 rounded" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Picture
+                </label>
+                <input
+                  type="file"
+                  onChange={handleImageChange}
+                  className="w-full border px-3 py-2 rounded"
+                />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full border px-3 py-2 rounded" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full border px-3 py-2 rounded"
+                />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full border px-3 py-2 rounded" rows={2}></textarea>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full border px-3 py-2 rounded"
+                  rows={2}
+                ></textarea>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-                <input type="number" min={1} value={quantity} onChange={e => setQuantity(Number(e.target.value))} className="w-full border px-3 py-2 rounded" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Quantity
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className="w-full border px-3 py-2 rounded"
+                />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                <input type="text" value={category} onChange={e => setCategory(e.target.value)} className="w-full border px-3 py-2 rounded" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <input
+                  type="text"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full border px-3 py-2 rounded"
+                />
               </div>
 
               <div className="flex justify-end gap-2 pt-4">
-                <button type="button" onClick={() => { setIsModalOpen(false); setCurrentItemId(null); }} className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">Cancel</button>
-                <button type="button" onClick={handleSave} className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">{currentItemId ? "Update" : "Save"}</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsModalOpen(false);
+                    setCurrentItemId(null);
+                  }}
+                  className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+                >
+                  {currentItemId ? "Update" : "Save"}
+                </button>
               </div>
             </form>
-            
           </div>
-    
         </div>
       )}
     </div>
