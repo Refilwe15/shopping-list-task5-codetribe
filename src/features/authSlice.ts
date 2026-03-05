@@ -1,15 +1,16 @@
+// src/features/authSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
 import axios from "axios";
 
 const API_URL = "http://localhost:5006/users";
 
 export interface User {
   id?: number;
-  name: string;
+  surname: string;
   email: string;
+  phone: string;
   password: string;
-  username: string;
+  username?: string;
 }
 
 interface AuthState {
@@ -29,6 +30,7 @@ export const signUpUser = createAsyncThunk<User, User, { rejectValue: string }>(
   "auth/signUpUser",
   async (newUser, { rejectWithValue }) => {
     try {
+      // POST new user to json-server
       const response = await axios.post<User>(API_URL, newUser);
       return response.data;
     } catch {
@@ -42,12 +44,12 @@ export const signInUser = createAsyncThunk<
   User,
   { email: string; password: string },
   { rejectValue: string }
->("auth/signInUser", async (credentials, { rejectWithValue }) => {
+>("auth/signInUser", async ({ email, password }, { rejectWithValue }) => {
   try {
-    const response = await axios.get<User[]>(`${API_URL}?email=${credentials.email}`);
+    const response = await axios.get<User[]>(`${API_URL}?email=${email}`);
     const user = response.data[0];
 
-    if (user && user.password === credentials.password) {
+    if (user && user.password === password) {
       return user;
     } else {
       return rejectWithValue("Invalid email or password");
@@ -69,6 +71,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // SignUp
       .addCase(signUpUser.pending, (state) => {
         state.status = "loading";
       })
@@ -80,6 +83,7 @@ const authSlice = createSlice({
         state.status = "failed";
         state.error = action.payload ?? "Sign-up failed";
       })
+      // SignIn
       .addCase(signInUser.pending, (state) => {
         state.status = "loading";
       })
