@@ -1,4 +1,4 @@
-npx json-server --watch db.json --port 5006
+
 
 # React Redux Shopping List
 
@@ -53,19 +53,23 @@ shopping-list/
 
 ## Installation
 
-1. Clone the repository:
+1. Start Server
+
+npx json-server --watch db.json --port 5006
+
+2. Clone the repository:
 
 git clone https://github.com/your-username/react-redux-shopping-list.git
 
-2. Navigate into the project folder:
+3. Navigate into the project folder:
 
 cd react-redux-shopping-list
 
-3. Install dependencies:
+4. Install dependencies:
 
 npm install
 
-4. Start the development server:
+5. Start the development server:
 
 npm start
 
