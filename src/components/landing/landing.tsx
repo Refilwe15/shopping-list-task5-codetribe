@@ -34,7 +34,7 @@ const LandingPage: React.FC = () => {
             <h1 className="text-5xl md:text-6xl font-bold leading-tight">
               MAKE SHOPPING
               <br />
-              <span className="text-blue-600">EASIER</span>
+              <span className="text-purple-600">EASIER</span>
             </h1>
 
             <p className="text-gray-600 mt-6 text-lg">
@@ -43,8 +43,8 @@ const LandingPage: React.FC = () => {
             </p>
 
             <Link
-              to="/register"
-              className="inline-block mt-8 bg-blue-600 text-white px-8 py-3 rounded-full shadow-md hover:bg-blue-700 transition"
+              to="/login"
+              className="inline-block mt-8 bg-purple-600 text-white px-8 py-3 rounded-full shadow-md hover:bg-blue-700 transition"
             >
               Get Started
             </Link>
