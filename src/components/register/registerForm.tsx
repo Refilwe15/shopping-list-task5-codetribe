@@ -23,9 +23,11 @@ const RegisterForm: React.FC = () => {
     dispatch(signUpUser({ surname, email, phone, password }));
   };
 
+  //  Navigate to login after successful registration
   useEffect(() => {
     if (currentUser) {
-      navigate("/shoppingList");
+      alert("Registration successful"); // show popup
+      navigate("/login"); // navigate to login page
     }
   }, [currentUser, navigate]);
 
@@ -35,7 +37,6 @@ const RegisterForm: React.FC = () => {
       <div className="flex w-full md:w-1/2 items-center justify-center p-8">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold mb-2">Create Account</h2>
-
           <p className="text-gray-500 mb-6">
             Fill in your details to get started
           </p>

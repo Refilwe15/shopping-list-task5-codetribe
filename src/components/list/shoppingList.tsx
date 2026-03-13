@@ -22,6 +22,7 @@ const API_URL = "http://localhost:5006/items";
 const ShoppingList: React.FC = () => {
   const items = useSelector((state: RootState) => state.list.items);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentItemId, setCurrentItemId] = useState<number | null>(null);
@@ -31,7 +32,6 @@ const ShoppingList: React.FC = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
 
   const fetchItems = useCallback(async () => {
     try {
@@ -67,10 +67,13 @@ const ShoppingList: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!name || !category) return;
+    if (!name || !category) {
+      alert("Please fill all required fields");
+      return;
+    }
 
     const item: LocalItem = {
-      id: currentItemId || Date.now(),
+      id: currentItemId ?? Date.now(),
       name,
       category,
       quantity,
@@ -82,19 +85,24 @@ const ShoppingList: React.FC = () => {
     };
 
     try {
-      if (currentItemId) {
+      if (currentItemId !== null) {
         await fetch(`${API_URL}/${currentItemId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(item),
         });
+
+        alert("Item updated successfully ✅");
       } else {
         await fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(item),
         });
+
+        alert("Item added successfully ✅");
       }
+
       fetchItems();
       setIsModalOpen(false);
       setCurrentItemId(null);
@@ -109,25 +117,58 @@ const ShoppingList: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this item?",
+    );
+
+    if (!confirmDelete) return;
+
     try {
       await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+
+      alert("Item deleted successfully 🗑️");
+
       fetchItems();
     } catch (err) {
-      console.error("Failed to delete item:", err);
+      console.error("Delete failed:", err);
     }
   };
 
   const handleToggleFavorite = async (item: LocalItem) => {
     const updatedItem = { ...item, favorite: !item.favorite };
+
     try {
       await fetch(`${API_URL}/${item.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedItem),
       });
+
       fetchItems();
     } catch (err) {
-      console.error("Failed to toggle favorite:", err);
+      console.error("Favorite update failed:", err);
+    }
+  };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
+
+    localStorage.removeItem("user");
+    dispatch(setItems([]));
+
+    alert("Logged out successfully");
+
+    navigate("/login");
+  };
+
+  const handleProfileClick = () => {
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      navigate("/login");
+    } else {
+      navigate("/profile");
     }
   };
 
@@ -137,200 +178,185 @@ const ShoppingList: React.FC = () => {
       item.category.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  // Logout handler
-  const handleLogout = () => {
-    dispatch(setItems([])); // Clear list from Redux (optional)
-    navigate("/login"); // Navigate to Form.tsx route
-  };
-
   return (
-    <div className="flex flex-col items-center min-h-screen bg-white- py-8 px-4">
-      {/* Profile Logo */}
-      <div className="icon">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center px-4 py-6">
+      {/* Header */}
+      <div className="w-full max-w-3xl flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold text-purple-700">My Shopping List</h2>
+
         <img
           src={Pics}
           alt="Profile"
-          onClick={() => navigate("/profile")}
-          className="w-12 h-12 rounded-full mb-4 ml-400 cursor-pointer hover:scale-105 transition-transform"
+          onClick={handleProfileClick}
+          className="w-12 h-12 rounded-full cursor-pointer hover:scale-105 transition"
         />
       </div>
 
-      <h2 className="text-2xl font-bold text-center mb-4">My Shopping List</h2>
-      <img src={Pic} alt="Shopping" className="w-28 h-28 mx-auto mb-6" />
+      <img src={Pic} alt="Shopping" className="w-24 h-24 mb-6" />
 
       {/* Search */}
-      <div className="flex gap-2 mb-4 w-full max-w-lg">
+      <div className="flex w-full max-w-3xl mb-6">
         <input
           type="text"
           placeholder="Search by name or category..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 border px-3 py-2 rounded"
+          className="flex-1 border rounded-l-lg px-4 py-2"
         />
         <button
           onClick={() => setSearchTerm("")}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
+          className="bg-purple-600 text-white px-4 rounded-r-lg hover:bg-purple-700"
         >
-          Search
+          Clear
         </button>
       </div>
 
       {/* Add Item */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="mb-6 bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600"
+        className="bg-purple-600 text-white px-6 py-2 rounded-lg mb-6 hover:bg-purple-700 shadow"
       >
         + Add Item
       </button>
 
-      {/* Items List */}
-      <ul className="space-y-4 w-full max-w-lg">
+      {/* Items */}
+      <div className="w-full max-w-3xl grid gap-4 sm:grid-cols-1 md:grid-cols-2">
         {filteredItems.length === 0 ? (
-          <p className="text-gray-500 text-center">No items found.</p>
+          <p className="text-gray-500">No items found.</p>
         ) : (
           filteredItems.map((item) => (
-            <li
+            <div
               key={item.id}
-              className="flex items-start gap-4 bg-white rounded-lg p-4 shadow-sm"
+              className="bg-white p-4 rounded-xl shadow hover:shadow-lg transition flex gap-4"
             >
               <img
                 src={item.image || "/placeholder.png"}
                 alt={item.name}
                 className="w-16 h-16 rounded object-cover"
               />
+
               <div className="flex-1">
-                <h3 className="font-semibold text-lg">{item.name}</h3>
+                <h3 className="font-semibold">{item.name}</h3>
+
                 <p className="text-sm text-gray-600">
                   Category: {item.category}
                 </p>
+
                 <p className="text-sm text-gray-600">
                   Quantity: {item.quantity}
                 </p>
+
                 {item.description && (
-                  <p className="text-sm text-gray-400 italic">
+                  <p className="text-xs text-gray-400 italic">
                     {item.description}
                   </p>
                 )}
 
-                <div className="flex gap-3 mt-3 text-sm">
+                <div className="flex gap-2 mt-3 flex-wrap">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="flex items-center gap-1 px-3 py-1 border text-green-500 border-green-600 rounded"
+                    className="flex items-center gap-1 text-purple-600 border border-purple-600 px-2 py-1 rounded text-sm"
                   >
-                    <FiEdit size={16} /> Edit
+                    <FiEdit /> Edit
                   </button>
+
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="flex items-center gap-1 px-3 py-1 border text-red-500 border-red-600 rounded hover:text-red-600"
+                    className="flex items-center gap-1 text-red-600 border border-red-600 px-2 py-1 rounded text-sm"
                   >
-                    <FiTrash size={16} /> Delete
+                    <FiTrash /> Delete
                   </button>
+
                   <button
                     onClick={() => handleToggleFavorite(item)}
-                    className={`flex items-center gap-1 px-3 py-1 border rounded text-yellow-500 border-yellow-600 ${item.favorite ? " text-yellow-500" : "border-black"}`}
+                    className={`flex items-center gap-1 px-2 py-1 rounded text-sm border ${
+                      item.favorite
+                        ? "bg-purple-100 text-purple-700 border-purple-500"
+                        : "border-gray-400 text-gray-600"
+                    }`}
                   >
-                    <FiStar size={16} /> Favorite
+                    <FiStar /> Favorite
                   </button>
                 </div>
               </div>
-            </li>
+            </div>
           ))
         )}
-      </ul>
+      </div>
 
       {/* Logout */}
       <button
         onClick={handleLogout}
-        className="mb-6 bg-red-500 text-white px-6 py-2 mt-20 rounded-lg shadow hover:bg-red-800"
+        className="mt-10 bg-red-600 text-white px-8 py-2 rounded-lg hover:bg-red-700 shadow"
       >
         Logout
       </button>
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center px-4">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md">
             <h3 className="text-xl font-bold mb-4">
-              {currentItemId ? "Edit Item" : "Add New Item"}
+              {currentItemId ? "Edit Item" : "Add Item"}
             </h3>
 
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Picture
-                </label>
-                <input
-                  type="file"
-                  onChange={handleImageChange}
-                  className="w-full border px-3 py-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full border px-3 py-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full border px-3 py-2 rounded"
-                  rows={2}
-                ></textarea>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  min={1}
-                  value={quantity}
-                  onChange={(e) => setQuantity(Number(e.target.value))}
-                  className="w-full border px-3 py-2 rounded"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Category
-                </label>
-                <input
-                  type="text"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="w-full border px-3 py-2 rounded"
-                />
-              </div>
+            <div className="space-y-3">
+              <input
+                type="file"
+                onChange={handleImageChange}
+                className="w-full border p-2 rounded"
+              />
 
-              <div className="flex justify-end gap-2 pt-4">
+              <input
+                type="text"
+                placeholder="Item Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full border p-2 rounded"
+              />
+
+              <textarea
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full border p-2 rounded"
+              />
+
+              <input
+                type="number"
+                min={1}
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                className="w-full border p-2 rounded"
+              />
+
+              <input
+                type="text"
+                placeholder="Category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full border p-2 rounded"
+              />
+
+              <div className="flex justify-end gap-2 mt-4">
                 <button
-                  type="button"
                   onClick={() => {
                     setIsModalOpen(false);
                     setCurrentItemId(null);
                   }}
-                  className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100"
+                  className="px-4 py-2 border rounded"
                 >
                   Cancel
                 </button>
+
                 <button
-                  type="button"
                   onClick={handleSave}
-                  className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
                 >
                   {currentItemId ? "Update" : "Save"}
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
